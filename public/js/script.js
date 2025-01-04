@@ -33,6 +33,15 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // Object to store markers for each user by ID
 const markers = {};
 
+// Listen for the current user locations when the page is loaded or after reconnect
+socket.on('currentLocations', (locations) => {
+    // For each user, create a marker for their location
+    Object.keys(locations).forEach((id) => {
+        const { latitude, longitude } = locations[id];
+        markers[id] = L.marker([latitude, longitude]).addTo(map);
+    });
+});
+
 // Listen for location updates from the server
 socket.on('locationMessage', (coords) => {
     const { latitude, longitude, id } = coords;
